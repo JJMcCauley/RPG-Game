@@ -10,8 +10,8 @@ function startCombat() {
     const combatLog = document.querySelector('#combat-log')
     const currentArea = 'area1';
     const encounterSize = getEncounterSize();
-    let currentEnemies = getEnemies(currentArea, encounterSize);
-    const currentEncounter = [...currentEnemies, ...party.members]
+    const currentEnemies = getEnemies(currentArea, encounterSize);
+    let currentEncounter = [...currentEnemies, ...party.members]
     console.log(currentEncounter)
     let msg;
     
@@ -71,13 +71,15 @@ function startCombat() {
             enemy.alive = false;
             printMessage(`<p><span class='tomato'>${capitalizeWord(enemy.name)}</span> has been <span class='red'>slain</span>!</p>`)
 
-            const element = document.querySelector(`[data-index="${enemy.index}"]`);
-            element.style.display = 'none';
+            const element = document.querySelector(`[data-index="${enemy.index}"][data-name="${enemy.name}"]`);
+            element.remove()
             if (currentEnemies.length > 1) {
                 currentEnemies.splice(enemy.index, 1)
             }
             else (currentEnemies.pop())
-            arrayRemove(currentEncounter, enemy.name)
+            console.log(currentEncounter)
+            currentEncounter.splice(enemy.currentEncounterIndex, 1)
+            console.log(currentEncounter)
             exp += enemy.exp;
             gold += enemy.gold;
         }
@@ -170,6 +172,7 @@ function startCombat() {
             for (let i = 0; i < currentEncounter.length; i++) {
                 const ticRate = randomNumberGenerator(1, 10);
                 const currentCharacter = currentEncounter[i];
+                currentCharacter.currentEncounterIndex = i;
                 currentCharacter.initiative += (ticRate + currentCharacter.speed);
                 if (currentCharacter.initiative >= 100 && currentCharacter.initiative > highestInit) {
                     highestInit = currentCharacter.initiative;
@@ -179,6 +182,7 @@ function startCombat() {
             }
         } while (!nextFound);
         console.log(`${characterUp.name}'s turn`)
+        console.log(currentEncounter)
         removeDivFocus();
         divFocus(document.querySelector(`[data-name="${characterUp.name}"]`))
         takeTurn();
@@ -232,7 +236,7 @@ function startCombat() {
             getCombatInput();
         }
         else {
-            msg = `<p><span class='tomato'>${capitalizeWord(characterUp.name)}</span> attacks!</p>`
+            msg = `<p><span class='tomato'>${capitalizeWord(characterUp.name)}</span> <span class = 'red'>attacks</span> <span class='player'>${party.members[randomNumberGenerator(0,3)].name}</span> for <span class='red'>${characterUp.attack}</span> points of damage!</p>`
             printMessage(msg);
             getNextTurn()
         }

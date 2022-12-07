@@ -16,8 +16,3 @@ function isEven(number) {
     else return false;
 }
 
-function arrayRemove(arr, value) { 
-    return arr.filter(function(ele){ 
-        return ele.name != value; 
-    });
-}
