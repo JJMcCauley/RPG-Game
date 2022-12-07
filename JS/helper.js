@@ -16,6 +16,8 @@ function isEven(number) {
     else return false;
 }
 
-function divFocus(div) {
-    div.style.border = '.5em solid rgb(63, 226, 210)'
+function arrayRemove(arr, value) { 
+    return arr.filter(function(ele){ 
+        return ele.name != value; 
+    });
 }

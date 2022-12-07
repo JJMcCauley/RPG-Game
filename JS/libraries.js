@@ -1,9 +1,9 @@
 const masterEnemyList = {
-    slime: new Enemy('slime', 8, 2, 1, 1, 1, 0, 4, -1, 'slime.webp'),
-    goblin: new Enemy('goblin', 12, 4, 4, 3, 2, 8, 12, -1, 'goblin.png'),
-    bugbear: new Enemy('bugbear', 20, 8, 2, 1, 5, 15, 20, -1, 'bugbear.jpg'),
-    spider: new Enemy('spider', 9, 3, 3, 5, 3, 0, 3, -1, 'spider.jpg'),
-    wolf: new Enemy('wolf', 14, 5, 3, 4, 4, 0, 5, -1, 'wolf.jpg')
+    slime: new Enemy('slime', 8, 2, 1, 3, 3, 0, 4, -1, 'slime.webp'),
+    goblin: new Enemy('goblin', 12, 4, 4, 6, 2, 8, 12, -1, 'goblin.png'),
+    bugbear: new Enemy('bugbear', 20, 8, 4, 1, 5, 15, 20, -1, 'bugbear.jpg'),
+    spider: new Enemy('spider', 9, 3, 3, 7, 3, 0, 3, -1, 'spider.jpg'),
+    wolf: new Enemy('wolf', 14, 5, 3, 4, 5, 0, 5, -1, 'wolf.jpg')
 };
 
 const enemiesByArea = {
@@ -150,7 +150,7 @@ const screens = {
                 <div id="combat-log" class="row p-5 text-center">
 
                 </div>
-                <div id="party" class="row mt-3">
+                <div id="party" class="row">
 
                 </div>
                 <div id="commands" class="row mt-3">

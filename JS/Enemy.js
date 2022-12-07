@@ -1,10 +1,10 @@
 class Enemy {
-    constructor(name, maxHP, attack, defense, evasion, exp, goldMin, goldMax, index, img) {
+    constructor(name, maxHP, attack, defense, speed, exp, goldMin, goldMax, index, img) {
         this.name = name;
         this.maxHP = maxHP;
         this.attack = attack;
         this.defense = defense;
-        this.evasion = evasion;
+        this.speed = speed;
         this.exp = exp;
         this.goldMin = goldMin;
         this.goldMax = goldMax;
@@ -13,6 +13,7 @@ class Enemy {
         this.status = 'attacking!';
         this.index = index;
         this.img = img;
+        this.initiative = 0;
     }
     get currentHP() {
         return this.maxHP - this.damage;
@@ -45,7 +46,7 @@ class Enemy {
     }
 
     generateEnemy(index) {
-        const enemy = new Enemy(this.name, this.maxHP, this.attack, this.defense, this.evasion, this.exp, this.goldMin, this.goldMax, index, this.img);
+        const enemy = new Enemy(this.name, this.maxHP, this.attack, this.defense, this.speed, this.exp, this.goldMin, this.goldMax, index, this.img);
         return enemy;
     }
 }

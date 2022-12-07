@@ -20,6 +20,7 @@ class PlayerCharacter {
         this.int = this.job.startingInt;
         this.luck = this.job.startingLuck;
         this.status = 'none';
+        this.initiative = 0;
     }
 
     get attack() {
@@ -49,6 +50,14 @@ class PlayerCharacter {
 
     get currentMP() {
         return this.maxMP - this.spentMP;
+    }
+
+    get partyIndex() {
+        for (let i = 0; i < party.members.length; i++) {
+            if (party.members[i].name === this.name) {
+                return i;
+            }
+        }
     }
 
     get pronoun() {

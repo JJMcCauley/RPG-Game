@@ -1,42 +1,43 @@
 function startCombat() {
     renderScreen(screens.battle)
     console.log(party);
-    let partyIndex = 0;
+    let partyIndex = 0;    
+    let exp = 0;
+    let gold = 0;
+    let characterUp;
     const enemyArea = document.querySelector('#enemy-area');
     const commands = document.querySelector('#commands')
     const combatLog = document.querySelector('#combat-log')
     const currentArea = 'area1';
     const encounterSize = getEncounterSize();
-    let exp = 0;
-    let gold = 0;
     let currentEnemies = getEnemies(currentArea, encounterSize);
+    const currentEncounter = [...currentEnemies, ...party.members]
+    console.log(currentEncounter)
     let msg;
+    
+    initializeInitiative();
     showParty(); 
-    if (currentEnemies.length > 1) {
-        msg = `
-            <p>${currentEnemies.length} <span class='tomato'>enemies</span> have arrived!</p>
-        `
-    }
-    else if (currentEnemies.length === 1) {
-        msg = `
-            <p>${currentEnemies.length} <span class='tomato'>enemy</span> has arrived!</p>
-        `
-    }
-    for (let i = 0; i < currentEnemies.length; i++) {
-        msg += `
-            <p>A <span class='tomato'>${currentEnemies[i].name}</span> is here!</p>
-        `
-    }
+    enemyArrival();
     printMessage(msg);
     displayEnemies(currentEnemies)
     msg = '<p class="turqoise">What would you like to do?</p>';
     printMessage(msg);
-    getCombatInput();
-
+    getPreCombatInput();
 
     commands.addEventListener('click', (e) => {
         if (e.target.type === "button") {
-            if (e.target.id === 'attack-btn') {
+            if (e.target.id === 'start-battle-btn') {
+                clearCommands();
+                getNextTurn();
+            }
+            else if (e.target.id === 'flee-battle-btn') {
+                clearCommands();
+                clearEnemyArea();
+                msg = `<p><span class="player">The party</span> has successfully fled the encounter!</span>!</p>`;
+                printMessage(msg)
+                commands.innerHTML = `<button type='button' id='next' class='btn btn-danger col-3'>Next</button>`
+            }
+            else if (e.target.id === 'attack-btn') {
                 playerAttack();
             }
             else if (e.target.id === 'attack-0') {
@@ -61,10 +62,10 @@ function startCombat() {
     })
 
     function processAttack(enemy) {
-        const attack = party.members[partyIndex].attack;
+        const attack = characterUp.attack;
         const damage = damageFormula(attack, enemy.defense)
         enemy.damage += damage;
-        printMessage(`<p><span class='player'>${party.members[partyIndex].name}</span> hits ${enemy.name} for ${damage} points of damage!</p>`)
+        printMessage(`<p><span class='player'>${characterUp.name}</span> hits ${enemy.name} for ${damage} points of damage!</p>`)
         if (enemy.currentHP <= 0) {
             enemy.status = 'dead.'
             enemy.alive = false;
@@ -76,13 +77,14 @@ function startCombat() {
                 currentEnemies.splice(enemy.index, 1)
             }
             else (currentEnemies.pop())
+            arrayRemove(currentEncounter, enemy.name)
             exp += enemy.exp;
             gold += enemy.gold;
         }
         if (currentEnemies.length > 0) {
             enemyStatus();
             clearCommands();
-            getCombatInput();
+            getNextTurn();
         }
         else {
             printMessage(`<p>Enemies defeated!<p>`);
@@ -104,6 +106,27 @@ function startCombat() {
 
     function clearCommands() {
         commands.innerHTML = '';
+    }
+
+    function enemyArrival() {
+        if (currentEnemies.length > 1) {
+            msg = 
+            `
+                <p>${currentEnemies.length} <span class='tomato'>enemies</span> have arrived!</p>
+            `
+        }
+        else if (currentEnemies.length === 1) {
+            msg = 
+            `
+                <p>${currentEnemies.length} <span class='tomato'>enemy</span> has arrived!</p>
+            `
+        }
+        for (let i = 0; i < currentEnemies.length; i++) {
+            msg += 
+            `
+                <p>A <span class='tomato'>${currentEnemies[i].name}</span> is here!</p>
+            `
+        }
     }
 
     function getEncounterSize() {
@@ -140,6 +163,33 @@ function startCombat() {
         return currentEnemies;
     }
 
+    function getNextTurn() {
+        let nextFound = false;
+        do {
+            let highestInit = 0;
+            for (let i = 0; i < currentEncounter.length; i++) {
+                const ticRate = randomNumberGenerator(1, 10);
+                const currentCharacter = currentEncounter[i];
+                currentCharacter.initiative += (ticRate + currentCharacter.speed);
+                if (currentCharacter.initiative >= 100 && currentCharacter.initiative > highestInit) {
+                    highestInit = currentCharacter.initiative;
+                    nextFound = true;
+                    characterUp = currentCharacter;
+                }
+            }
+        } while (!nextFound);
+        console.log(`${characterUp.name}'s turn`)
+        removeDivFocus();
+        divFocus(document.querySelector(`[data-name="${characterUp.name}"]`))
+        takeTurn();
+    }
+
+    function initializeInitiative() {
+        for (let i = 0; i < currentEncounter.length; i++) {
+            currentEncounter[i].initiative = 0;
+        }
+    }
+
     function displayEnemies(enemyList) {
         let imgHtml = '';
         if (enemyList.length === 1) {
@@ -164,9 +214,28 @@ function startCombat() {
         commands.innerHTML = enemyHtml;
     }
 
+    function getPreCombatInput() {
+        const startBattleBtn = `<div class='col-3 command'><button type="button" id="start-battle-btn" class="mt-3 btn btn-danger">Start Battle!</button></div>`;
+        commands.insertAdjacentHTML('beforeend', startBattleBtn);
+        const fleeBtn = `<div class='col-3 command'><button type="button" id="flee-battle-btn" class="mt-3 btn btn-warning">Flee Battle!</button></div>`;
+        commands.insertAdjacentHTML('beforeend', fleeBtn);
+    }
+
     function getCombatInput() {
         const attack = `<div class='col-3 command'><button type="button" id="attack-btn" class="mt-3 btn btn-danger">Attack!</button></div>`;
         commands.insertAdjacentHTML('beforeend', attack);
+    }
+
+    function takeTurn() {
+        characterUp.initiative = 0;
+        if (party.members.includes(characterUp)) {
+            getCombatInput();
+        }
+        else {
+            msg = `<p><span class='tomato'>${capitalizeWord(characterUp.name)}</span> attacks!</p>`
+            printMessage(msg);
+            getNextTurn()
+        }
     }
     
 
@@ -191,7 +260,7 @@ function startCombat() {
             const character = party.members[i];
             html +=
                 `
-                <div data-character="${character.name}" class="card col-3 p-3 text-center">
+                <div data-name="${character.name}" data-index="${character.partyIndex}" class="card col-3 p-3 text-center">
                     <img src="${character.job.img}" class="card-img-top mx-auto" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">${capitalizeWord(character.name)}</h5>
@@ -202,12 +271,23 @@ function startCombat() {
             `;
         }
         partyDiv.innerHTML = html;
-        divFocus(document.querySelector(`[data-character="${party.members[0].name}"]`))
     }
 
     function printMessage(message) {
         combatLog.insertAdjacentHTML('beforeend', message);
         scrollToBottom();
+    }
+
+    
+    function divFocus(div) {
+        div.style.border = '.5em solid rgb(63, 226, 210)'
+    }
+
+    function removeDivFocus() {
+        const combatantDivs = document.querySelectorAll(`[data-name]`)
+        for (let i = 0; i < combatantDivs.length; i++) {
+            combatantDivs[i].style.border = 'inherit'
+        }
     }
 }
 
