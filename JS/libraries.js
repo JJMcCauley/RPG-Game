@@ -12,7 +12,7 @@ const library = {
             exp: 5,
             goldMin: 15,
             goldMax: 20,
-            img: '/img/bugbear.jpg'            
+            img: 'img/bugbear.png'            
         },
         goblin: {
             name: 'goblin',
@@ -26,7 +26,7 @@ const library = {
             exp: 2,
             goldMin: 8,
             goldMax: 12,
-            img: '/img/goblin.png'            
+            img: 'img/goblin.png'            
         },
         slime: {
             name: 'slime',
@@ -40,7 +40,7 @@ const library = {
             exp: 3,
             goldMin: 0,
             goldMax: 4,
-            img: '/img/slime.webp'            
+            img: 'img/slime.png'            
         }, 
         spider: {
             name: 'spider',
@@ -54,7 +54,7 @@ const library = {
             exp: 3,
             goldMin: 0,
             goldMax: 3,
-            img: '/img/spider.jpg'            
+            img: 'img/spider.png'            
         },
         wolf: {
             name: 'wolf',
@@ -68,7 +68,7 @@ const library = {
             exp: 5,
             goldMin: 0,
             goldMax: 5,
-            img: '/img/wolf.jpg'            
+            img: 'img/wolf.png'            
         }
     },
     
@@ -237,7 +237,7 @@ const library = {
                 shield: ''
             },
             heaviestEquipment: 'medium',
-            img: '/img/hero.png'
+            img: 'img/hero.png'
         },
         thief: {
             name: 'thief',
@@ -255,7 +255,7 @@ const library = {
                 shield: ''
             },
             heaviestEquipment: 'medium',
-            img: '/img/thief.webp'
+            img: 'img/thief.png'
         },
         warrior: {
             name: 'warrior',
@@ -273,7 +273,7 @@ const library = {
                 shield: ''
             },
             heaviestEquipment: 'heavy',
-            img: '/img/warrior.jpg'
+            img: 'img/warrior.png'
         },
         witch: {
             name: 'witch',
@@ -291,7 +291,7 @@ const library = {
                 shield: ''
             },
             heaviestEquipment: 'light',
-            img: '/img/witch.png'
+            img: 'img/witch.png'
         }
     },
 

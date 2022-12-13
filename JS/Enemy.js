@@ -25,6 +25,10 @@ class Enemy {
         }
         return attacks;
     }
+
+    get attack() {
+        return this.attacks['bash']
+    }
     
     get currentHP() {
         return this.maxHP - this.damage;

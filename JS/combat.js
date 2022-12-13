@@ -189,7 +189,7 @@ function startCombat() {
             }
         } while (!nextFound);
         removeDivFocus();
-        console.log(characterUp.name)
+        console.log(characterUp)
         if (characterUp.isEnemy) {
             divFocus(document.querySelector(`[data-name="${characterUp.encounterName}"]`))    
         }
@@ -255,7 +255,7 @@ function startCombat() {
             getCombatInput();
         }
         else {
-            msg = `<p><span class='tomato'>${capitalizeWord(characterUp.name)}</span> <span class = 'red'>attacks</span> <span class='player'>${party.members[randomNumberGenerator(0,3)].name}</span> for <span class='red'>${characterUp.attack}</span> points of damage!</p>`
+            msg = `<p><span class='tomato'>${capitalizeWord(characterUp.name)}</span> <span class = 'red'>attacks</span> <span class='player'>${party.members[randomNumberGenerator(0,3)].name}</span> for <span class='red'>${characterUp.attack.damage}</span> points of damage!</p>`
             printMessage(msg);
             getNextTurn()
         }
