@@ -213,14 +213,14 @@ function startCombat() {
             let i = 0;
             imgHtml = `<div data-name='${enemyList[i].encounterName}' class='col-${4} center enemy-div'><img src='${enemyList[i].img}'>`;
             imgHtml += `<p class='white enemy-status'>${capitalizeWord(enemyList[i].encounterName)}</p>`
-            imgHtml += `<p class='white enemy-status'>${enemyList[i].currentHP}/${enemyList[i].maxHP}</p>`
+            imgHtml += `<p class='white enemy-status'>HP: ${enemyList[i].currentHP}/${enemyList[i].maxHP}</p>`
             imgHtml += `</div >`;
         }
         else if (enemyList.length >= 2) {
             for (let i = 0; i < enemyList.length; i++) {
                 imgHtml += `<div data-name='${enemyList[i].encounterName}' class='col-${12 / enemyList.length} center enemy-div'><img src='${enemyList[i].img}'>`;
                 imgHtml += `<p class='white enemy-status'>${capitalizeWord(enemyList[i].encounterName)}</p>`
-                imgHtml += `<p class='white enemy-status'>${enemyList[i].currentHP}/${enemyList[i].maxHP}</p>`
+                imgHtml += `<p class='white enemy-status'>HP: ${enemyList[i].currentHP}/${enemyList[i].maxHP}</p>`
                 imgHtml += `</div >`;
             }
         }
