@@ -1,25 +1,40 @@
 class Enemy {
-    constructor(name, maxHP, attack, defense, speed, exp, goldMin, goldMax, index, img) {
-        this.name = name;
-        this.maxHP = maxHP;
-        this.attack = attack;
-        this.defense = defense;
-        this.speed = speed;
-        this.exp = exp;
-        this.goldMin = goldMin;
-        this.goldMax = goldMax;
+    constructor(name, index, number = 1) {
+        this.name = library.masterEnemyList[name].name;
+        this.maxHP = library.masterEnemyList[name].maxHP;
+        this.defense = library.masterEnemyList[name].defense;
+        this.speed = library.masterEnemyList[name].speed;
+        this.exp = library.masterEnemyList[name].exp;
+        this.goldMin = library.masterEnemyList[name].goldMin;
+        this.goldMax = library.masterEnemyList[name].goldMax;
         this.damage = 0;
         this.alive = true;
         this.status = 'attacking!';
-        this.index = index;
-        this.img = img;
+        this.index = `${this.name}-${index}`;
+        this.number = number;
+        this.img = library.masterEnemyList[name].img;
         this.initiative = 0;
+        this.isEnemy = true;
     }
+
+    get attacks() { 
+        const attacks = {};
+        const attackList = library.masterEnemyList[this.name].attacks;
+        for (let i = 0; i < attackList.length; i++) {
+            attacks[attackList[i]] = library.enemySkills[attackList[i]]
+        }
+        return attacks;
+    }
+    
     get currentHP() {
         return this.maxHP - this.damage;
     }
     get gold() {
         return randomNumberGenerator(this.goldMin, this.goldMax)
+    }
+
+    get encounterName() {
+        return `${this.name} ${this.number}`
     }
 
     get healthState() {
@@ -43,10 +58,5 @@ class Enemy {
             this.alive = false;
             return `has <span class='red'>been defeated</span>.`;
         }
-    }
-
-    generateEnemy(index) {
-        const enemy = new Enemy(this.name, this.maxHP, this.attack, this.defense, this.speed, this.exp, this.goldMin, this.goldMax, index, this.img);
-        return enemy;
     }
 }

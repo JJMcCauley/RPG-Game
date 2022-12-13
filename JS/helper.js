@@ -1,8 +1,3 @@
-function randomNumberGenerator(min, max) {
-    // Returns a random integer from 1 to 10:
-    return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
 function capitalizeWord(word) {
     return `${word[0].toUpperCase()}${word.slice(1)}`;
 }
@@ -16,3 +11,11 @@ function isEven(number) {
     else return false;
 }
 
+function getScript(scriptLocation) {
+    return library.script[scriptLocation]
+}
+
+function randomNumberGenerator(min, max) {
+    // Returns a random integer from 1 to 10:
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}

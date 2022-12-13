@@ -1,5 +1,5 @@
 function startCombat() {
-    renderScreen(screens.battle)
+    renderScreen(library.screens.battle)
     console.log(party);
     let partyIndex = 0;    
     let exp = 0;
@@ -10,8 +10,10 @@ function startCombat() {
     const combatLog = document.querySelector('#combat-log')
     const currentArea = 'area1';
     const encounterSize = getEncounterSize();
-    const currentEnemies = getEnemies(currentArea, encounterSize);
-    let currentEncounter = [...currentEnemies, ...party.members]
+    const currentEncounter = {};
+    currentEncounter.enemies = getEnemies(currentArea, encounterSize);
+    currentEncounter.playerParty = [...party.members];
+    currentEncounter.whole = [...currentEncounter.enemies, ...currentEncounter.playerParty]
     console.log(currentEncounter)
     let msg;
     
@@ -19,7 +21,7 @@ function startCombat() {
     showParty(); 
     enemyArrival();
     printMessage(msg);
-    displayEnemies(currentEnemies)
+    displayEnemies()
     msg = '<p class="turqoise">What would you like to do?</p>';
     printMessage(msg);
     getPreCombatInput();
@@ -40,14 +42,8 @@ function startCombat() {
             else if (e.target.id === 'attack-btn') {
                 playerAttack();
             }
-            else if (e.target.id === 'attack-0') {
-                processAttack(currentEnemies[0]);
-            }
-            else if (e.target.id === 'attack-1') {
-                processAttack(currentEnemies[1]);
-            }
-            else if (e.target.id === 'attack-2') {
-                processAttack(currentEnemies[2]);
+            else if (e.target.id === 'attack') {
+                processAttack(e.target.dataset.target);
             }
             else if (e.target.id === 'back') {
                 clearCommands();
@@ -55,41 +51,43 @@ function startCombat() {
             }
             
             else if (e.target.id === 'next') {
-                renderScreen(screens.postBattle);
+                renderScreen(library.screens.postBattle);
                 postCombat(party);
             }
         }
     })
 
-    function processAttack(enemy) {
+    function getEnemy(name) {
+        for (let i = 0; i < currentEncounter.enemies.length; i++) {
+            if (currentEncounter.enemies[i].encounterName === name) return currentEncounter.enemies[i];
+        }
+    }
+
+    function processAttack(enemyName) {
+        const enemy = getEnemy(enemyName);
         const attack = characterUp.attack;
         const damage = damageFormula(attack, enemy.defense)
         enemy.damage += damage;
         printMessage(`<p><span class='player'>${characterUp.name}</span> hits ${enemy.name} for ${damage} points of damage!</p>`)
+        msg = `
+            <p>The <span class=tomato>${enemy.name}</span> ${enemy.healthState}</p>
+        `;
+            printMessage(msg);
         if (enemy.currentHP <= 0) {
             enemy.status = 'dead.'
             enemy.alive = false;
-            printMessage(`<p><span class='tomato'>${capitalizeWord(enemy.name)}</span> has been <span class='red'>slain</span>!</p>`)
-
-            const element = document.querySelector(`[data-index="${enemy.index}"][data-name="${enemy.name}"]`);
-            element.remove()
-            if (currentEnemies.length > 1) {
-                currentEnemies.splice(enemy.index, 1)
-            }
-            else (currentEnemies.pop())
-            console.log(currentEncounter)
-            currentEncounter.splice(enemy.currentEncounterIndex, 1)
-            console.log(currentEncounter)
+            currentEncounter.whole = currentEncounter.whole.filter(foe => foe.encounterName !== enemyName)
+            currentEncounter.enemies = currentEncounter.enemies.filter(foe => foe.encounterName !== enemyName)
             exp += enemy.exp;
             gold += enemy.gold;
         }
-        if (currentEnemies.length > 0) {
-            enemyStatus();
+        displayEnemies()
+        if (currentEncounter.enemies.length > 0) {
             clearCommands();
             getNextTurn();
         }
         else {
-            printMessage(`<p>Enemies defeated!<p>`);
+            printMessage(`<span class='tomato'><p>Enemies</span> <span class='red'>defeated!</span><p>`);
             printMessage(`<p><span class="player">The party</span> earns <span class='gold'>${gold} gold</span> and <span class='exp'>${exp} experience points</span>!</p>`)
             party.gold += gold;
             party.exp += exp;
@@ -98,6 +96,7 @@ function startCombat() {
             clearEnemyArea();
             commands.innerHTML = `<button type='button' id='next' class='btn btn-danger col-3'>Next</button>`
         }
+        console.log(currentEncounter)
         if (partyIndex < 3) partyIndex++;
         else partyIndex = 0;
     }
@@ -111,22 +110,22 @@ function startCombat() {
     }
 
     function enemyArrival() {
-        if (currentEnemies.length > 1) {
+        if (currentEncounter.enemies.length > 1) {
             msg = 
             `
-                <p>${currentEnemies.length} <span class='tomato'>enemies</span> have arrived!</p>
+                <p>${currentEncounter.enemies.length} <span class='tomato'>enemies</span> have arrived!</p>
             `
         }
-        else if (currentEnemies.length === 1) {
+        else if (currentEncounter.enemies.length === 1) {
             msg = 
             `
-                <p>${currentEnemies.length} <span class='tomato'>enemy</span> has arrived!</p>
+                <p>${currentEncounter.enemies.length} <span class='tomato'>enemy</span> has arrived!</p>
             `
         }
-        for (let i = 0; i < currentEnemies.length; i++) {
+        for (let i = 0; i < currentEncounter.enemies.length; i++) {
             msg += 
             `
-                <p>A <span class='tomato'>${currentEnemies[i].name}</span> is here!</p>
+                <p>A <span class='tomato'>${currentEncounter.enemies[i].name}</span> is here!</p>
             `
         }
     }
@@ -145,33 +144,41 @@ function startCombat() {
     }
 
     function getCurrentEnemies(enemyList, enemyPartySize) {
-        const currentEnemies = [];
+        const enemies = [];
         for (let i = 0; i < enemyPartySize; i++) {
             const enemyIndex = randomNumberGenerator(0, enemyList.length - 1)
             const currentEnemy = enemyList[enemyIndex];
             currentEnemy.index = i;
-            currentEnemies.push(enemyList[enemyIndex])
+            enemies.push(enemyList[enemyIndex])
         }
-        return currentEnemies;
+        return enemies;
     }
 
     function getEnemies(area, encounterSize) {
-        const potentialEnemies = enemiesByArea[area];
+        const potentialEnemies = library.enemiesByArea[area];
         const enemyList = getCurrentEnemies(potentialEnemies, encounterSize);
-        const currentEnemies = [];
+        const enemies = [];
+        const enemiesInEncounter = [];
         for (let i = 0; i < enemyList.length; i++) {
-            currentEnemies.push(masterEnemyList[enemyList[i]].generateEnemy(i))
+            const enemy = new Enemy(enemyList[i], i);
+            if (!enemiesInEncounter.includes(enemy.name)) {
+                enemiesInEncounter.push(enemy.name);
+            }
+            else {
+                enemy.number++;
+            }
+            enemies.push(enemy)
         }
-        return currentEnemies;
+        return enemies;
     }
 
     function getNextTurn() {
         let nextFound = false;
         do {
             let highestInit = 0;
-            for (let i = 0; i < currentEncounter.length; i++) {
+            for (let i = 0; i < currentEncounter.whole.length; i++) {
                 const ticRate = randomNumberGenerator(1, 10);
-                const currentCharacter = currentEncounter[i];
+                const currentCharacter = currentEncounter.whole[i];
                 currentCharacter.currentEncounterIndex = i;
                 currentCharacter.initiative += (ticRate + currentCharacter.speed);
                 if (currentCharacter.initiative >= 100 && currentCharacter.initiative > highestInit) {
@@ -181,28 +188,40 @@ function startCombat() {
                 }
             }
         } while (!nextFound);
-        console.log(`${characterUp.name}'s turn`)
-        console.log(currentEncounter)
         removeDivFocus();
-        divFocus(document.querySelector(`[data-name="${characterUp.name}"]`))
+        console.log(characterUp.name)
+        if (characterUp.isEnemy) {
+            divFocus(document.querySelector(`[data-name="${characterUp.encounterName}"]`))    
+        }
+        else {
+            divFocus(document.querySelector(`[data-name="${characterUp.name}"]`))
+        }
         takeTurn();
     }
 
     function initializeInitiative() {
-        for (let i = 0; i < currentEncounter.length; i++) {
-            currentEncounter[i].initiative = 0;
+        for (let i = 0; i < currentEncounter.whole.length; i++) {
+            currentEncounter.whole[i].initiative = 0;
         }
     }
 
-    function displayEnemies(enemyList) {
+    function displayEnemies() {
+        const enemyList = currentEncounter.enemies;
         let imgHtml = '';
+        enemyArea.innerHTML = imgHtml;
         if (enemyList.length === 1) {
             let i = 0;
-                imgHtml = `<div data-name='${enemyList[i].name}' data-index='${i}' class='col-${4} center enemy-div'><img src='img/${enemyList[i].img}'></div>`;
+            imgHtml = `<div data-name='${enemyList[i].encounterName}' class='col-${4} center enemy-div'><img src='${enemyList[i].img}'>`;
+            imgHtml += `<p class='white enemy-status'>${capitalizeWord(enemyList[i].encounterName)}</p>`
+            imgHtml += `<p class='white enemy-status'>${enemyList[i].currentHP}/${enemyList[i].maxHP}</p>`
+            imgHtml += `</div >`;
         }
         else if (enemyList.length >= 2) {
             for (let i = 0; i < enemyList.length; i++) {
-                imgHtml += `<div data-name='${enemyList[i].name}' data-index='${i}' class='col-${12/enemyList.length} center enemy-div'><img src='img/${enemyList[i].img}'></div>`;
+                imgHtml += `<div data-name='${enemyList[i].encounterName}' class='col-${12 / enemyList.length} center enemy-div'><img src='${enemyList[i].img}'>`;
+                imgHtml += `<p class='white enemy-status'>${capitalizeWord(enemyList[i].encounterName)}</p>`
+                imgHtml += `<p class='white enemy-status'>${enemyList[i].currentHP}/${enemyList[i].maxHP}</p>`
+                imgHtml += `</div >`;
             }
         }
         enemyArea.insertAdjacentHTML('beforeend', imgHtml);
@@ -211,8 +230,8 @@ function startCombat() {
     function playerAttack() {
         clearCommands();
         let enemyHtml = '';
-        for (let i = 0; i < currentEnemies.length; i++) {
-            enemyHtml += `<div class='col-3 command'><button type="button" id="attack-${i}" class="mt-3 btn btn-danger">Enemy ${i + 1}<br> ${capitalizeWord(currentEnemies[i].name)}</button></div>`;
+        for (let i = 0; i < currentEncounter.enemies.length; i++) {
+            enemyHtml += `<div class='col-3 command'><button type="button" id="attack" data-target="${currentEncounter.enemies[i].encounterName}" class="mt-3 btn btn-danger">${capitalizeWord(currentEncounter.enemies[i].encounterName)}</button></div>`;
         }
         enemyHtml += `<div class='col-3 command'><button type="button" id="back" class="mt-3 btn btn-info">Back</button></div>`;
         commands.innerHTML = enemyHtml;
@@ -244,8 +263,8 @@ function startCombat() {
     
 
     function enemyStatus() {
-        for (let i = 0; i < currentEnemies.length; i++) {
-            const enemy = currentEnemies[i];
+        for (let i = 0; i < currentEncounter.enemies.length; i++) {
+            const enemy = currentEncounter.enemies[i];
             msg = `
             <p><span class=tomato>${capitalizeWord(enemy.name)}</span> is ${enemy.status} The <span class=tomato>${enemy.name}</span> ${enemy.healthState}</p>
         `;
@@ -260,7 +279,7 @@ function startCombat() {
     function showParty() {
         const partyDiv = document.querySelector('#party');
         let html = '';
-        for (let i = 0; i < party.members.length; i++) {
+        for (let i = 0; i < currentEncounter.playerParty.length; i++) {
             const character = party.members[i];
             html +=
                 `

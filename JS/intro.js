@@ -1,5 +1,5 @@
 function intro() {
-    renderScreen(screens.intro);
+    renderScreen(library.screens.intro);
     const introDiv = document.querySelector('#intro-div')
     const partySize = 4;
     let namedIndex = 0;
@@ -17,7 +17,7 @@ function intro() {
     })
 
     function startNaming() {
-        introDiv.innerHTML = screens.nameParty;
+        introDiv.innerHTML = library.screens.nameParty;
         const nameInput = document.querySelector('#character-name-input');
         nameInput.focus();
         introDiv.addEventListener('click', (e) => {
@@ -48,12 +48,12 @@ function intro() {
         function nameCharacter(name) {
             const label = document.querySelector('#character-label');
             const nameBtn = document.querySelector('#name-character');
-            tempParty.push(new PlayerCharacter(name, document.querySelector('input:checked').value, masterJobList[jobList[namedIndex]]));
+            tempParty.push(new PlayerCharacter(name, document.querySelector('input:checked').value, library.jobArray[namedIndex]));
             namedIndex++;
             if (namedIndex < partySize) {
                 nameInput.value = '';
                 nameInput.focus();
-                label.textContent = script.intro[namedIndex];
+                label.textContent = library.script.intro.getName[namedIndex];
                 document.querySelector('#radioHe').checked = true;
                 nameBtn.textContent = 'Name Your Friend';
             }
