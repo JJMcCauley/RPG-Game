@@ -4,3 +4,13 @@ const defaultParty = [new PlayerCharacter('Jack', 'male', library.jobArray[0]),
                         new PlayerCharacter('Codan', 'male', library.jobArray[3])]
 
 const party = new Party(defaultParty);
+
+function createMasterSpellList() {
+    const spellList = [];
+    for (let spell in library.masterSpellList) {
+        const newSpell = new Spell(spell)
+        spellList.push(newSpell)
+    }
+    return spellList;
+}
+const masterSpellList = createMasterSpellList();

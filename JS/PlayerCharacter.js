@@ -1,6 +1,7 @@
 class PlayerCharacter {
     constructor(name, gender, job) {
         this.name = name;
+        this.level = 3;
         this.gender = gender;
         this.job = new Job(job);
         this.equipment = {
@@ -9,19 +10,20 @@ class PlayerCharacter {
             armor: this.job.startingArmor,
             accessory: 'none',
         }
-        this.maxHP = this.job.startingHP;
-        this.damage = 0;
-        this.maxMP = this.job.startingMP;
-        this.spentMP = 0;
-        this.str = this.job.startingStr;
-        this.dex = this.job.startingDex;
-        this.speed = this.job.startingSpeed;
-        this.sta = this.job.startingSta;
-        this.int = this.job.startingInt;
-        this.luck = this.job.startingLuck;
+        this.stats = new PlayerStats(this.job);
         this.status = 'none';
-        this.initiative = 0;
         this.isEnemy = false;
+        this.damage = 0;
+        this.spentMP = 0;
+        this.initiative = 0;
+        this.currentlyCasting = '';
+    }
+
+    get alive() {
+        if (this.currentHP <= 0) {
+            return false;
+        }
+        else return true;
     }
 
     get attack() {
@@ -29,28 +31,43 @@ class PlayerCharacter {
         let randomInt = randomNumberGenerator(1, 10);
         let attack = this.equipment.weapon.damage;
         if (isEven(randomInt)) {
-            const extraDamage = randomNumberGenerator(0, this.equipment.weapon.dmgRange);
-            attack += extraDamage;
+            attack += randomNumberGenerator(0, this.equipment.weapon.dmgRange);
         }
         else {
             attack -= randomNumberGenerator(0, this.equipment.weapon.dmgRange);
         }
         if (this.equipment.weapon.weight === 'light') {
-            damage = Math.round(((2 * attack) + 2 * this.dex) / 3);
+            damage = Math.round(((2 * attack) + 2 * this.stats.dex) / 3);
         }
         else {
-            damage = Math.round(((2 * attack) + this.str) / 3);
+            damage = Math.round(((2 * attack) + this.stats.str) / 3);
         }
         if (damage > 1) return damage;
         else return 1;
     }
 
+    get magicAttack() {
+        let damage = 0;
+        let randomInt = randomNumberGenerator(1, 10);
+        const spell = this.currentlyCasting;
+        let magicAttack = spell.baseDamage + this.level;
+        if (isEven(randomInt)) {
+            magicAttack += randomNumberGenerator(0, spell.damageRange)
+        }
+        else {
+            magicAttack -= randomNumberGenerator(0, spell.damageRange)
+        }
+        damage = Math.round(((2 * magicAttack) + this.stats.int) / 3);
+        if (damage > 1) return damage;
+        else return 1;
+    }
+
     get currentHP() {
-        return this.maxHP - this.damage;
+        return this.stats.maxHP - this.damage;
     }
 
     get currentMP() {
-        return this.maxMP - this.spentMP;
+        return this.stats.maxMP - this.spentMP;
     }
 
     get partyIndex() {
@@ -71,6 +88,53 @@ class PlayerCharacter {
         else if (this.gender === 'non-binary') {
             return 'they';
         }
+    }
+
+    get spells() {
+        if (this.job.hasSpells) {
+            const spellList = [];
+            for (let spellLevel in this.job.spells) {
+                for (let i = 0; i < this.job.spells[spellLevel].length; i++) {
+                    if (parseInt(spellLevel) <= this.level) {
+                        spellList.push(this.job.spells[spellLevel][i])
+                    }
+                }
+            }
+            if (spellList.length >= 1) {
+                const spellObjects = [];
+                for (let i = 0; i < spellList.length; i++) {
+                    const newSpell = masterSpellList.filter(magSpell => magSpell.name === spellList[i]);
+                    spellObjects.push(newSpell[0])
+                }
+                return spellObjects;
+            }
+            else return  `${capitalizeWord(this.name)} knows no spells yet.`
+        }
+        else return `${capitalizeWord(this.name)} has no spells.`
+    }
+
+    get hasOffensiveSpells() {
+        if (typeof this.spells !== 'string') {
+            for (let i = 0; i < this.spells.length; i++) {
+                if (this.spells[i].type === 'offensive') {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else return false;
+    }
+
+    get hasSupportSpells() {
+        if (typeof this.spells !== 'string') {
+            for (let i = 0; i < this.spells.length; i++) {
+                if (this.spells[i].type === 'support') {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else return false;
     }
 
     equipGear(gear) {

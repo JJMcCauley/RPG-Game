@@ -2,8 +2,15 @@ function capitalizeWord(word) {
     return `${word[0].toUpperCase()}${word.slice(1)}`;
 }
 
-function damageFormula(attack, defense) {    
-    return Math.round(attack * (100 / (100 + defense)))
+function damageFormula(attack, defense) { 
+    const dmg = Math.round(attack * (100 / (100 + defense)));
+    const msg = `
+                    Attack Value: ${attack}
+                    Defense Value: ${defense}
+                    Total Damage: ${dmg}
+    `
+    console.log(msg);
+    return dmg;
 }
 
 function isEven(number) {

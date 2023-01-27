@@ -8,6 +8,7 @@ const library = {
                 'bash'
             ],
             defense: 5,
+            magicDefense: 5,
             speed: 3,
             exp: 5,
             goldMin: 15,
@@ -22,6 +23,7 @@ const library = {
                 'bash'
             ],
             defense: 4,
+            magicDefense: 3,
             speed: 6,
             exp: 2,
             goldMin: 8,
@@ -36,6 +38,7 @@ const library = {
                 'bash'
             ],
             defense: 3,
+            magicDefense: 8,
             speed: 3,
             exp: 3,
             goldMin: 0,
@@ -50,6 +53,7 @@ const library = {
                 'bash'
             ],
             defense: 3,
+            magicDefense: 3,
             speed: 7,
             exp: 3,
             goldMin: 0,
@@ -64,6 +68,7 @@ const library = {
                 'bash'
             ],
             defense: 3,
+            magicDefense: 4,
             speed: 4,
             exp: 5,
             goldMin: 0,
@@ -79,10 +84,13 @@ const library = {
             'slime',
             'spider',
             'wolf'
+        ],
+        area2: [
+            'wolf'
         ]
     },
 
-    enemySkills: {
+    masterSkillList: {
         bash: {
             name: 'bash',
             attack: 6,
@@ -90,6 +98,58 @@ const library = {
             damageRng: 3,
             choiceWeight: 0,
             speed: 'medium'
+        }
+    },
+
+    masterSpellList: {
+        familiar: {
+            name: 'familiar',
+            type: 'support',
+            target: 'self',
+            desc: 'Summons a familiar that attacks on its own every time the character has a turn',
+            mpCost: 4,
+            speed: 'medium',
+            specialEffects: 'does a certain amount of damage to a random enemy when the user takes a turn'
+        },
+        fire: {
+            name: 'fire',
+            type: 'offensive',
+            target: 'enemy',
+            desc: 'Burns the target in a fiery inferno that can leave the foe burnt',
+            hpDamage: 12,
+            damageRange: 3,
+            mpCost: 4,
+            speed: 'medium',
+            specialEffects: 'has a chance to burn the enemy'
+        },
+        heal: {
+            name: 'heal',
+            type: 'support',
+            target: 'friendly',
+            desc: `Heal's target for a small amount`,
+            hpHeal: 12,
+            mpCost: 4,
+            speed: 'medium',
+        },
+        lightning: {
+            name: 'lightning',
+            type: 'offensive',
+            target: 'enemy',
+            desc: 'Calls lightning down upon an enemy, spreading to nearby foes and having the chance to shock them',
+            hpDamage: 8,
+            damageRange: 7,
+            mpCost: 4,
+            speed: 'medium',
+            specialEffects: 'hits other enemies for less damage, every enemy hit has to make a save or have their initiative lowered, the amount of initiative lowered and difficulty of check is based on amount of damage taken'
+        },
+        slow: {
+            name: 'slow',
+            type: 'offensive',
+            target: 'enemy',
+            desc: "Lowers an enemy's speed by a small amount",
+            mpCost: 4,
+            speed: 'medium',
+            specialEffects: 'slow'
         }
     },
 
@@ -237,7 +297,14 @@ const library = {
                 shield: ''
             },
             heaviestEquipment: 'medium',
-            img: 'img/hero.png'
+            img: 'img/hero.png',
+            hasSpells: true,
+            hasAbilities: true,
+            spells: {
+                2: [
+                    'heal'
+                ]
+            }
         },
         thief: {
             name: 'thief',
@@ -255,7 +322,15 @@ const library = {
                 shield: ''
             },
             heaviestEquipment: 'medium',
-            img: 'img/thief.png'
+            img: 'img/thief.png',
+            hasSpells: true,
+            hasAbilities: true,
+            spells: {
+                3: [
+                    'slow',
+                    'fire'
+                ]
+            }
         },
         warrior: {
             name: 'warrior',
@@ -273,7 +348,9 @@ const library = {
                 shield: ''
             },
             heaviestEquipment: 'heavy',
-            img: 'img/warrior.png'
+            img: 'img/warrior.png',
+            hasSpells: false,
+            hasAbilities: true,
         },
         witch: {
             name: 'witch',
@@ -291,7 +368,21 @@ const library = {
                 shield: ''
             },
             heaviestEquipment: 'light',
-            img: 'img/witch.png'
+            img: 'img/witch.png',
+            hasSpells: true,
+            hasAbilities: false,
+            spells: {
+                1: [
+                    'fire'
+                ],
+                2: [
+                    'familiar'
+                ],
+                3: [
+                    'lightning',
+                    'heal'
+                ]
+            }
         }
     },
 

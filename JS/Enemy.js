@@ -1,14 +1,8 @@
 class Enemy {
     constructor(name, index, number = 1) {
         this.name = library.masterEnemyList[name].name;
-        this.maxHP = library.masterEnemyList[name].maxHP;
-        this.defense = library.masterEnemyList[name].defense;
-        this.speed = library.masterEnemyList[name].speed;
-        this.exp = library.masterEnemyList[name].exp;
-        this.goldMin = library.masterEnemyList[name].goldMin;
-        this.goldMax = library.masterEnemyList[name].goldMax;
+        this.stats = new EnemyStats(name)
         this.damage = 0;
-        this.alive = true;
         this.status = 'attacking!';
         this.index = `${this.name}-${index}`;
         this.number = number;
@@ -17,11 +11,18 @@ class Enemy {
         this.isEnemy = true;
     }
 
+    get alive() {
+        if (this.currentHP <= 0) {
+            return false;
+        }
+        else return true;
+    }
+
     get attacks() { 
         const attacks = {};
         const attackList = library.masterEnemyList[this.name].attacks;
         for (let i = 0; i < attackList.length; i++) {
-            attacks[attackList[i]] = library.enemySkills[attackList[i]]
+            attacks[attackList[i]] = library.masterSkillList[attackList[i]]
         }
         return attacks;
     }
@@ -31,10 +32,10 @@ class Enemy {
     }
     
     get currentHP() {
-        return this.maxHP - this.damage;
+        return this.stats.maxHP - this.damage;
     }
     get gold() {
-        return randomNumberGenerator(this.goldMin, this.goldMax)
+        return randomNumberGenerator(this.stats.goldMin, this.stats.goldMax)
     }
 
     get encounterName() {
@@ -42,7 +43,7 @@ class Enemy {
     }
 
     get healthState() {
-        const healthPercent = this.currentHP / this.maxHP;
+        const healthPercent = this.currentHP / this.stats.maxHP;
         if (healthPercent === 1) {
             return `is <span class='green'>perfectly healthy</span>.`
         }
@@ -59,7 +60,6 @@ class Enemy {
             return `is <span class='red'>struggling to stay standing</span>.`
         }
         else {
-            this.alive = false;
             return `has <span class='red'>been defeated</span>.`;
         }
     }

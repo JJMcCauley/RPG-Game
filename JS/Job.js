@@ -12,6 +12,15 @@ class Job {
         this.heaviestEquipment = library.masterJobList[name].heaviestEquipment;
         this.startingEquipment = library.masterJobList[name].startingEquipment;
         this.img = library.masterJobList[name].img;
+        this.hasSpells = library.masterJobList[name].hasSpells;
+        this.hasAbilities = library.masterJobList[name].hasAbilities;
+    }
+
+    get spells() {
+        if (this.hasSpells) {
+            return library.masterJobList[this.name].spells;
+        }
+        else return 'none';
     }
 
     get startingArmor() {
