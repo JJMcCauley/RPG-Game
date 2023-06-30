@@ -618,7 +618,7 @@ const startCombat = (party) => {
       html += `
                 <div data-name="${character.name}" data-index="${
         character.partyIndex
-      }" class="card col-3 p-3 text-center">
+      }" class="card player-card col-3 p-3 text-center">
                     <img src="${
                       character.job.img
                     }" class="class-img card-img-top mx-auto" alt="...">
@@ -626,12 +626,12 @@ const startCombat = (party) => {
                         <h5 class="card-title">${capitalizeWord(
                           character.name
                         )}</h5>
-                        <p class="card-text">HP: ${character.stats.maxHP}/${
-        character.currentHP
-      }</p>
-                        <p class="card-text">MP: ${character.stats.maxMP}/${
-        character.currentMP
-      }</p>
+                        <p class="card-text"><span class="player">HP</span>: ${
+                          character.stats.maxHP
+                        }/${character.currentHP}</p>
+                        <p class="card-text"><span class="exp">MP</span>: ${
+                          character.stats.maxMP
+                        }/${character.currentMP}</p>
                     </div>
                 </div>
             `;

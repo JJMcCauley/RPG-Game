@@ -350,21 +350,25 @@ const library = {
 
   screens: {
     intro: `
-            <div id="intro-screen" class="container p-1 position-relative">
-                <div id='intro-div' class="row center position-absolute top-50 start-50 translate-middle">
-                    <button type="button" id="start-naming" class="btn col-3 btn-success mt-5">Name Your Party</button>
-                    <button type="button" id="start-game" class="btn col-3 btn-info mt-5">Skip Naming</button>
-                </div>
+            <div class="d-flex justify-content-center align-items-center vh-100">
+              <div id="intro-screen" class="container p-1 position-relative">
+                  <div id='naming-sprite' class="position-absolute">
+                  </div>
+                  <div id='intro-div' class="m-2 row center position-absolute top-50 start-50 translate-middle">
+                      <div class="col-3 d-flex flex-column">
+                        <button type="button" id="start-naming" class="m-2 btn btn-success">Name Your Party</button>
+                        <button type="button" id="start-game" class="m-2 btn btn-info">Skip Naming</button>
+                      </div>
+                  </div>
+              </div>
             </div>
         `,
 
     nameParty: `
                 <label for="character-name" id='character-label' class="text-center col-12">Please enter the main hero's name!</label>
                 <div id='character-name-div'>
-                    <div class="mt-3 col-6">
-                        <input name='character-name' id="character-name-input"></input>
-                    </div>
-                    <div id="radio-div" class="mt-3 col-3">
+                    <input name='character-name' class="col-3 m-1" id="character-name-input"></input>
+                    <div id="radio-div" class="m-1 col-3">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="genderOptions" id="radioHe" value="male" checked>
                             <label class="form-check-label" for="inlineRadio1">He</label>
@@ -378,14 +382,13 @@ const library = {
                             <label class="form-check-label" for="inlineRadio3">They</label>
                         </div>
                     </div>
-                    <div class="mt-3  col-3">
-                        <button type="button" id="name-character" class="btn btn-success">Name Yourself</button>
-                    </div>
-                </div>
+                </div>                
+                <button type="button" id="name-character" class="col-3 m-1 btn btn-success">Name Yourself</button>
+                
             `,
 
     battle: `
-                <div id='combat-screen' class="container mt-3 p-3">
+                <div id='combat-screen' class="container p-3">
                     <div id="enemy-area" class="row mt-1 p-1">
 
                     </div>

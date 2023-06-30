@@ -2,6 +2,7 @@ const renderScreen = require("./screenRender");
 const library = require("./libraries");
 const PlayerCharacter = require("./PlayerCharacter");
 const { capitalizeWord } = require("./helper");
+const Party = require("./Party");
 
 function intro(party) {
   return new Promise((resolve, reject) => {
@@ -10,6 +11,12 @@ function intro(party) {
     const partySize = 4;
     let namedIndex = 0;
     const tempParty = [];
+    const sprites = [
+      library.masterJobList.hero.img,
+      library.masterJobList.warrior.img,
+      library.masterJobList.thief.img,
+      library.masterJobList.witch.img,
+    ];
 
     introDiv.addEventListener("click", (e) => {
       if (e.target.type === "button") {
@@ -23,6 +30,8 @@ function intro(party) {
 
     function startNaming() {
       introDiv.innerHTML = library.screens.nameParty;
+      const spriteBox = document.querySelector("#naming-sprite");
+      spriteBox.innerHTML = `<img src="./${sprites[namedIndex]}" />`;
       const nameInput = document.querySelector("#character-name-input");
       nameInput.focus();
       introDiv.addEventListener("click", (e) => {
@@ -30,7 +39,8 @@ function intro(party) {
           if (e.target.id === "name-character" && nameInput.value !== "") {
             nameCharacter(nameInput.value);
           } else if (e.target.id === "party-confirmed") {
-            resolve(tempParty);
+            const newParty = new Party(tempParty);
+            resolve(newParty);
           } else if (e.target.id === "party-rename") {
             tempParty.length = 0;
             namedIndex = 0;
@@ -59,6 +69,7 @@ function intro(party) {
         );
         namedIndex++;
         if (namedIndex < partySize) {
+          spriteBox.innerHTML = `<img src="./${sprites[namedIndex]}" />`;
           nameInput.value = "";
           nameInput.focus();
           label.textContent = library.script.intro.getName[namedIndex];
