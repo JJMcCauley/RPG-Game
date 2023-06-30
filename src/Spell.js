@@ -5,7 +5,7 @@ class Spell {
     this.name = spellName;
     this.type = library.masterSpellList[spellName].type;
     this.target = library.masterSpellList[spellName].target;
-    this.desc = library.masterSpellList[spellName].desc;
+    this.shortDesc = library.masterSpellList[spellName].shortDesc;
     if (library.masterSpellList[spellName].hpDamage) {
       this.baseDamage = library.masterSpellList[spellName].hpDamage;
       this.damageRange = library.masterSpellList[spellName].damageRange;

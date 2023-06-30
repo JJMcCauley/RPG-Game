@@ -468,11 +468,14 @@ const startCombat = (party) => {
     if (spellType === "all") {
       for (let i = 0; i < currentEncounter.characterUp.spells.length; i++) {
         const spell = currentEncounter.characterUp.spells[i];
+        console.log(spell);
         magicHtml += `
                     <div class='col-3 command mt-3'>
                         <p id="${
                           spell.name
-                        }-tooltip-text" class='tooltip-text'>${spell.desc}</p>
+                        }-tooltip-text" class='tooltip-text'>${
+          spell.shortDesc
+        }</p>
                         <button type='button' id='spell-${
                           spell.name
                         }' data-spell-name='${
@@ -490,7 +493,7 @@ const startCombat = (party) => {
                             <p id="${
                               spell.name
                             }-tooltip-text" class='tooltip-text'>${
-            spell.desc
+            spell.shortDesc
           }</p>
                             <button type='button' id='spell-${
                               spell.name
@@ -510,7 +513,7 @@ const startCombat = (party) => {
                             <p id="${
                               spell.name
                             }-tooltip-text" class='tooltip-text'>${
-            spell.desc
+            spell.shortDesc
           }</p>
                             <button type='button' id='spell-${
                               spell.name
