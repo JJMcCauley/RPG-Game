@@ -248,3 +248,7 @@ p.tooltip-text {
     opacity: 1;
   }
 }
+
+.class-img {
+  object-fit: contain;
+}

@@ -621,7 +621,7 @@ const startCombat = (party) => {
       }" class="card col-3 p-3 text-center">
                     <img src="${
                       character.job.img
-                    }" class="card-img-top mx-auto" alt="...">
+                    }" class="class-img card-img-top mx-auto" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">${capitalizeWord(
                           character.name
