@@ -1,3 +1,6 @@
+const Spell = require("./Spell");
+const library = require("./libraries");
+
 function capitalizeWord(word) {
   return `${word[0].toUpperCase()}${word.slice(1)}`;
 }
@@ -27,10 +30,20 @@ function randomNumberGenerator(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function getMasterSpellList() {
+  const spellList = [];
+  for (let spell in library.masterSpellList) {
+    const newSpell = new Spell(spell);
+    spellList.push(newSpell);
+  }
+  return spellList;
+}
+
 module.exports = {
   capitalizeWord,
   damageFormula,
   isEven,
+  getMasterSpellList,
   getScript,
   randomNumberGenerator,
 };

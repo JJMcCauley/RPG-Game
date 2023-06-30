@@ -351,7 +351,7 @@ const library = {
             <div id="intro-screen" class="container p-1 position-relative">
                 <div id='intro-div' class="row center position-absolute top-50 start-50 translate-middle">
                     <button type="button" id="start-naming" class="btn col-3 btn-success mt-5">Name Your Party</button>
-                    <button type="button" id="start-combat" class="btn col-3 btn-info mt-5">Skip Naming</button>
+                    <button type="button" id="start-game" class="btn col-3 btn-info mt-5">Skip Naming</button>
                 </div>
             </div>
         `,

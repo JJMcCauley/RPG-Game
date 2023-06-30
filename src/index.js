@@ -1,7 +1,8 @@
 const library = require("./libraries");
 const Party = require("./Party");
 const PlayerCharacter = require("./PlayerCharacter");
-const Spell = require("./Spell");
+const intro = require("./intro");
+const startGame = require("./gameLogic");
 
 const defaultParty = [
   new PlayerCharacter("Jack", "male", library.jobArray[0]),
@@ -10,17 +11,15 @@ const defaultParty = [
   new PlayerCharacter("Codan", "male", library.jobArray[3]),
 ];
 
-const party = new Party(defaultParty);
+let party = new Party(defaultParty);
 
-function createMasterSpellList() {
-  const spellList = [];
-  for (let spell in library.masterSpellList) {
-    const newSpell = new Spell(spell);
-    spellList.push(newSpell);
-  }
-  return spellList;
-}
-
-const masterSpellList = createMasterSpellList();
-
-console.log(masterSpellList);
+intro(party)
+  .then((updatedParty) => {
+    party = updatedParty;
+    startGame(party);
+    // Continue with the next part of the code here
+  })
+  .catch((error) => {
+    // Handle any errors that occurred during the intro() function
+    console.error(error);
+  });

@@ -1,5 +1,10 @@
 const Job = require("./Job");
 const PlayerStats = require("./PlayerStats");
+const {
+  getMasterSpellList,
+  randomNumberGenerator,
+  isEven,
+} = require("./helper");
 
 class PlayerCharacter {
   constructor(name, gender, job) {
@@ -69,12 +74,17 @@ class PlayerCharacter {
     return this.stats.maxMP - this.spentMP;
   }
 
-  get partyIndex() {
+  set partyIndex(party) {
     for (let i = 0; i < party.members.length; i++) {
       if (party.members[i].name === this.name) {
-        return i;
+        this._partyIndex = i;
+        break;
       }
     }
+  }
+
+  get partyIndex() {
+    return this._partyIndex;
   }
 
   get pronoun() {
@@ -100,7 +110,7 @@ class PlayerCharacter {
       if (spellList.length >= 1) {
         const spellObjects = [];
         for (let i = 0; i < spellList.length; i++) {
-          const newSpell = masterSpellList.filter(
+          const newSpell = getMasterSpellList().filter(
             (magSpell) => magSpell.name === spellList[i]
           );
           spellObjects.push(newSpell[0]);
