@@ -2,7 +2,6 @@ const renderScreen = require("./screenRender");
 const library = require("./libraries");
 const PlayerCharacter = require("./PlayerCharacter");
 const { capitalizeWord } = require("./helper");
-const Party = require("./Party");
 
 function intro(party) {
   return new Promise((resolve, reject) => {
@@ -39,8 +38,8 @@ function intro(party) {
           if (e.target.id === "name-character" && nameInput.value !== "") {
             nameCharacter(nameInput.value);
           } else if (e.target.id === "party-confirmed") {
-            const newParty = new Party(tempParty);
-            resolve(newParty);
+            party.members = [...tempParty];
+            resolve(party);
           } else if (e.target.id === "party-rename") {
             tempParty.length = 0;
             namedIndex = 0;
