@@ -83,6 +83,7 @@ function intro(party) {
                             <div id="party-confirmation" class="text-center">
                                 <h2 class="turqoise mb-3">Are you happy with this party?</h2>
                         `;
+          spriteBox.innerHTML = "";
           for (let i = 0; i < tempParty.length; i++) {
             let toBe = "is";
             if (tempParty[i].pronoun === "they") {
