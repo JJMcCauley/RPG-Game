@@ -90,9 +90,9 @@ function intro(party) {
               toBe = "are";
             }
             html += `
-                                <p><span class="green">${capitalizeWord(
-                                  tempParty[i].name
-                                )}</span> the <span class="exp">${capitalizeWord(
+            <p><span class="green">${capitalizeWord(
+              tempParty[i].name
+            )}</span> the <span class="exp">${capitalizeWord(
               tempParty[i].job.name
             )}</span>, <span class="blue">${
               tempParty[i].pronoun
